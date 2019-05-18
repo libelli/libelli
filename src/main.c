@@ -24,6 +24,7 @@ static const char *version_ = "libelli 0.0";
 
 static unsigned num_packages_ = 6;
 static pkg_t packages_[] = {
+    {"all", "https://github.com/libelli"},
     {"std:varray", "https://github.com/libelli/varray"},
     {"std:argparse", "https://github.com/libelli/argparse"},
     {"std:flag", "https://github.com/libelli/flag"},
@@ -54,8 +55,14 @@ void split_pkg_name(unsigned pkg, unsigned n, char *namespace_buff,
     namespace_buff[i] = packages_[pkg].name[i];
   }
   namespace_buff[index] = 0;
-  for (unsigned i = index + 1; i < strlen(packages_[pkg].name); ++i) {
-    name_buff[i - index - 1] = packages_[pkg].name[i];
+  if (index != 0) {
+    for (unsigned i = index + 1; i < strlen(packages_[pkg].name); ++i) {
+      name_buff[i - index - 1] = packages_[pkg].name[i];
+    }
+  } else {
+    for (unsigned i = 0; i < strlen(packages_[pkg].name); ++i) {
+      name_buff[i] = packages_[pkg].name[i];
+    }
   }
   name_buff[strlen(packages_[pkg].name)] = 0;
 }
@@ -144,9 +151,11 @@ int main(int argc, char *argv[]) {
              0 == strncmp(argv[1], "--version", 9)) {
     printf("%s\n", version_);
     return 0;
-  } else if (0 == strncmp(argv[1], "i", 1) || 0 == strncmp(argv[1], "install", 7)) {
+  } else if (0 == strncmp(argv[1], "i", 1) ||
+             0 == strncmp(argv[1], "install", 7)) {
     return 1;
-  } else if (0 == strncmp(argv[1], "s", 1) || 0 == strncmp(argv[1], "search", 6)) {
+  } else if (0 == strncmp(argv[1], "s", 1) ||
+             0 == strncmp(argv[1], "search", 6)) {
     return search(argc, argv);
   } else if (0 == strncmp(argv[1], "help", 4)) {
     return 5;
